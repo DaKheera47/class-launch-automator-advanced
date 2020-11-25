@@ -6,18 +6,20 @@
 
 # add any further classes below. follow above syntax. they appear in the order here
 
-Panda's Meeting:
-    code: 713-5952-5354
-    password: p0QdVt
-
-Maths:
-    code: 414-686-7306
-    password: 4146867306
+Computer Science:
+    code: 545-763-2078
+    password: 5457632078
+    time_weekday: "08:00"
+    time_friday: None
 
 Chemistry:
     code: 414-686-7306
     password: 4146867306
+    time_weekday: "09:40"
+    time_friday: "11:20"
 
-Computer Science:
-    code: 545-763-2078
-    password: 5457632078
+Maths:
+    code: 414-686-7306
+    password: 4146867306
+    time_weekday: "11:20"
+    time_friday: "10:00"
