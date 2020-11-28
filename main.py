@@ -3,7 +3,6 @@ import time
 from pick import pick
 import yaml
 from launcher import main as launcherMain
-import schedule
 
 
 def main():
@@ -56,6 +55,3 @@ def main():
 
     # printing final execution time
     print(f"Total Execution Time: {round(time.time() - t1, 2)}s")
-
-
-schedule.every().monday.at("08:00")
