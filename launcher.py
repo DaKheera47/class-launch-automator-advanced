@@ -4,6 +4,45 @@ import os
 import sys
 
 
+def findImage(imageUrl, message, confidence):
+    i = 1
+
+    while True:
+        time.sleep(0.5)
+        try:
+            joinMeetingX, joinMeetingY = pag.locateCenterOnScreen(
+                imageUrl, confidence=confidence)
+        except TypeError:
+            print(f"{message} (attempts: {i})")
+            i += 1
+            continue
+        break
+
+    return (joinMeetingX, joinMeetingY)
+
+
+def checkAbsence(imageUrl, message):
+    i = 1
+    while True:
+        location = pag.locateOnScreen(imageUrl)
+
+        if location == None:
+            break
+        else:
+            print(
+                f"{message} (attempts: {i})")
+
+        time.sleep(5)
+        i += 1
+
+
+def enterTextInput(x, y, text, message):
+    pag.click(x=x, y=y)
+    pag.write(text)
+    print(f"\n{message}")
+    pag.press("enter")
+
+
 def main(code, password, STANDARD_WAIT, SETUP):
     if SETUP["launch_method"] == "executable":
         # extracting executable location from config.yaml
@@ -11,7 +50,6 @@ def main(code, password, STANDARD_WAIT, SETUP):
 
         if zoomExe != None and os.path.exists(zoomExe):
             # if zoom path isnt empty and it is valid
-            print("path exists")
             cwd = os.getcwd()
             os.chdir(r"C:\Users\dakonwindows\AppData\Roaming\Zoom\bin")
             os.system(f"start "" Zoom.exe")
@@ -19,7 +57,6 @@ def main(code, password, STANDARD_WAIT, SETUP):
             # if the file path provided is incorrect
             sys.exit(
                 "ERROR: launch_method chosen is executable but no executable path is provided or the path provided is incorrect")
-
     elif SETUP["launch_method"] == "startMenu":
         # start button
         pag.press("win")
@@ -27,65 +64,43 @@ def main(code, password, STANDARD_WAIT, SETUP):
         # launch zoom
         pag.write("Zoom")
         pag.press("enter")
-
     else:
         sys.exit("ERROR: launch_method is unsupported in config.yaml")
-
-    print(cwd)
     os.chdir(cwd)
 
     # wait for zoom to launch
     time.sleep(10)
 
-    print("Zoom should be launched!")
-
     # locate join button on zoom
-    join = pag.locateCenterOnScreen("joinBtn.PNG")
-
-    while join == None:
-        print("button not found")
-        join = pag.locateCenterOnScreen("joinBtn.PNG")
-
-    print("Join Button Found! Clicking join")
-    pag.click(join)
+    joinX, joinY = findImage(
+        "joinBtn.png", "Join button not found... Searching again", 0.8)
+    pag.click(x=joinX, y=joinY)
 
     # enter code into meeting id field
-    time.sleep(STANDARD_WAIT)
-    pag.write(code)
-    print("Code Entered!")
-    pag.press("enter")
+    joinMeetingX, joinMeetingY = findImage(
+        "joinMeeting.png", "Join Meeting button not found... Searching again", 0.8)
+    enterTextInput(joinMeetingX, joinMeetingY + 60, code, "Code entered!")
 
     # enter password into meeting id field
-    time.sleep(STANDARD_WAIT + 2)
-    pag.write(password)
-    print("Password Entered!")
-    pag.press("enter")
+    enterPassX, enterPassY = findImage(
+        "enterMeetingPw.png", "Enter Meeting Password text not found... Searching again", 0.8)
+    enterTextInput(enterPassX, enterPassY + 60,
+                   password, "Password entered!")
 
     # wait for password to be accepted
     time.sleep(10)
 
-    hasMeetingStarted = False
+    # confirming if the meeting has started
+    checkAbsence("pleaseWaitForMeeting.png",
+                 "Meeting is yet to start... waiting 5s before retrying")
 
-    for _ in range(180):
-        time.sleep(5)
-
-        while hasMeetingStarted == False:
-            meeting = pag.locateOnScreen('pleaseWaitForMeeting.png')
-            if meeting == None:
-                hasMeetingStarted = True
-            else:
-                print("Meeting hasn't started yet")
-
-        a = pag.locateOnScreen('testComputerAudioBtn.png')
-        if a == None:
-            print("Host accepted")
-            break
-        else:
-            print("Host has not accepted yet")
+    # confirming if the host has accepted user into meeting
+    checkAbsence("testComputerAudioBtn.png",
+                 "Host has not accepted yet... waiting 5s before retrying")
 
     # locate join with computer audio button on zoom
-    time.sleep(STANDARD_WAIT)
-    pag.click(pag.locateCenterOnScreen("joinWithComputerAudioBtn.PNG"))
+    pag.click(findImage("joinWithComputerAudioBtn.PNG",
+                        "Cannot find join with computer audio button... Searching again", 0.8))
 
     # force full screen zoom
     pag.hotkey("win", "up")
