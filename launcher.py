@@ -4,6 +4,10 @@ import os
 import sys
 
 
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
 def findImage(imageUrl, message, confidence):
     i = 1
 
@@ -18,6 +22,7 @@ def findImage(imageUrl, message, confidence):
             continue
         break
 
+    clear()
     return (joinMeetingX, joinMeetingY)
 
 
@@ -34,6 +39,7 @@ def checkAbsence(imageUrl, message):
 
         time.sleep(5)
         i += 1
+    clear()
 
 
 def enterTextInput(x, y, text, message):

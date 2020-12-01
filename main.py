@@ -2,6 +2,7 @@ import pyautogui as pag
 import time
 import yaml
 from launcher import main as launcherMain
+from launcher import clear
 import schedule
 import datetime
 
@@ -29,6 +30,7 @@ def getCodeAndPass(cls):
 def main():
     currTime = datetime.datetime.now().strftime("%H:%M")
     currDay = datetime.datetime.today().weekday()
+    clear()
     print(f"called main: {currTime}")
 
     # getting standard wait time based on selection
