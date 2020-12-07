@@ -12,12 +12,12 @@ def findImage(imageUrl, message, confidence):
     i = 1
 
     while True:
-        time.sleep(0.5)
+        time.sleep(1)
         try:
             joinMeetingX, joinMeetingY = pag.locateCenterOnScreen(
                 imageUrl, confidence=confidence)
         except TypeError:
-            print(f"{message} (attempts: {i})")
+            print(f"{message} (attempts: {i})", end="\r")
             i += 1
             continue
         break
@@ -28,6 +28,7 @@ def findImage(imageUrl, message, confidence):
 
 def checkAbsence(imageUrl, message):
     i = 1
+
     while True:
         location = pag.locateOnScreen(imageUrl)
 
@@ -35,10 +36,11 @@ def checkAbsence(imageUrl, message):
             break
         else:
             print(
-                f"{message} (attempts: {i})")
+                f"{message} (attempts: {i})", end="\r")
 
         time.sleep(5)
         i += 1
+
     clear()
 
 
@@ -63,6 +65,7 @@ def main(code, password, STANDARD_WAIT, SETUP):
             # if the file path provided is incorrect
             sys.exit(
                 "ERROR: launch_method chosen is executable but no executable path is provided or the path provided is incorrect")
+
     elif SETUP["launch_method"] == "startMenu":
         # start button
         pag.press("win")
@@ -72,6 +75,8 @@ def main(code, password, STANDARD_WAIT, SETUP):
         pag.press("enter")
     else:
         sys.exit("ERROR: launch_method is unsupported in config.yaml")
+
+    # resetting cwd back to original to use images in that folder
     os.chdir(cwd)
 
     # wait for zoom to launch
@@ -87,26 +92,17 @@ def main(code, password, STANDARD_WAIT, SETUP):
         "joinMeeting.png", "Join Meeting button not found... Searching again", 0.8)
     enterTextInput(joinMeetingX, joinMeetingY + 60, code, "Code entered!")
 
-    # enter password into meeting id field
+    # enter password into password field
     enterPassX, enterPassY = findImage(
         "enterMeetingPw.png", "Enter Meeting Password text not found... Searching again", 0.8)
-    enterTextInput(enterPassX, enterPassY + 60,
-                   password, "Password entered!")
+    enterTextInput(enterPassX, enterPassY + 60, password, "Password entered!")
 
     # wait for password to be accepted
     time.sleep(10)
 
-    # confirming if the meeting has started
-    checkAbsence("pleaseWaitForMeeting.png",
-                 "Meeting is yet to start... waiting 5s before retrying")
-
-    # confirming if the host has accepted user into meeting
-    checkAbsence("testComputerAudioBtn.png",
-                 "Host has not accepted yet... waiting 5s before retrying")
-
     # locate join with computer audio button on zoom
     pag.click(findImage("joinWithComputerAudioBtn.PNG",
-                        "Cannot find join with computer audio button... Searching again", 0.8))
+                        "Have not joined class yet... Searching again", 0.8))
 
     # force full screen zoom
     pag.hotkey("win", "up")

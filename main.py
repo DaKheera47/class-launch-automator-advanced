@@ -28,10 +28,10 @@ def getCodeAndPass(cls):
 
 
 def main():
+    # clear()
     currTime = datetime.datetime.now().strftime("%H:%M")
     currDay = datetime.datetime.today().weekday()
-    clear()
-    print(f"called main: {currTime}")
+    print(f"called main: {currTime}", end="\r")
 
     # getting standard wait time based on selection
     STANDARD_WAIT = SETUP[SETUP["chosen_speed"]]["duration"]
@@ -39,21 +39,31 @@ def main():
 
     for cls in CLASS_INFO.items():
         if currTime == cls[1]["time_weekday"] and currDay in range(3):
-            code_to_use, password_to_use = getCodeAndPass(cls[0])
-            print(
-                f"Using {cls[0]} class information \n Code: {code_to_use} \n Pass: {password_to_use}")
-            launcherMain(code_to_use, password_to_use, STANDARD_WAIT, SETUP)
-            print(
-                f"Successfully launched {cls[0]} class and now waiting for next class time!")
+            isConfirmed = pag.confirm(
+                text=f'Join {cls[0]} class?', title='Confirm joining class', buttons=['OK', 'Cancel'])
+
+            if isConfirmed == "OK":
+                code_to_use, password_to_use = getCodeAndPass(cls[0])
+                print(
+                    f"\nUsing {cls[0]} class information \n     Code: {code_to_use} \n      Pass: {password_to_use}")
+                launcherMain(code_to_use, password_to_use,
+                             STANDARD_WAIT, SETUP)
+                print(
+                    f"Successfully launched {cls[0]} class and now waiting for next class time!")
 
         elif currTime == cls[1]["time_friday"] and currDay == 4:
-            # if cls[0] == "Chemistry":
-            code_to_use, password_to_use = getCodeAndPass(cls[0])
-            print(
-                f"Using {cls[0]} class information \n Code: {code_to_use} \n Pass: {password_to_use}")
-            launcherMain(code_to_use, password_to_use, STANDARD_WAIT, SETUP)
-            print(
-                f"Successfully launched {cls[0]} class and now waiting for next class time!")
+            isConfirmed = pag.confirm(
+                text=f'Join {cls[0]} class?', title='Confirm joining class', buttons=['OK', 'Cancel'])
+
+            if isConfirmed == "OK":
+                #    if cls[0] == "Chemsitry":
+                code_to_use, password_to_use = getCodeAndPass(cls[0])
+                print(
+                    f"\nUsing {cls[0]} class information \n Code: {code_to_use} \n Pass: {password_to_use}")
+                launcherMain(code_to_use, password_to_use,
+                             STANDARD_WAIT, SETUP)
+                print(
+                    f"Successfully launched {cls[0]} class and now waiting for next class time!")
 
 
 schedule.every(30).seconds.do(main)
