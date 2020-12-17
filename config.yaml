@@ -14,4 +14,7 @@ fast:
 
 pause_multiplier: 0.2
 
+# maximum time (mins) after the class starting that you want a class to still be launched
+maxClassTimeDiff: 5
+
 zoom_executable_location: C:\Users\dakonwindows\AppData\Roaming\Zoom\bin\Zoom.exe

@@ -6,6 +6,7 @@ import sys
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
+    print("Dak's Dank Class Launcher")
 
 
 def findImage(imageUrl, message, confidence):
@@ -102,7 +103,7 @@ def main(code, password, STANDARD_WAIT, SETUP):
 
     # locate join with computer audio button on zoom
     pag.click(findImage("joinWithComputerAudioBtn.PNG",
-                        "Have not joined class yet... Searching again", 0.8))
+                        "Have not been accepted into class yet... trying again", 0.8))
 
     # force full screen zoom
     pag.hotkey("win", "up")

@@ -10,16 +10,16 @@ Computer Science:
     code: 414-686-7306
     password: 4146867306
     time_weekday: "08:00"
-    time_friday: None
+    # time_friday: None
 
 Chemistry:
     code: 414-686-7306
     password: 4146867306
     time_weekday: "09:40"
-    time_friday: "11:20"
+    # time_friday: "11:20"
 
 Maths:
     code: 414-686-7306
     password: 4146867306
     time_weekday: "11:20"
-    time_friday: "10:00"
+    # time_friday: "10:00"

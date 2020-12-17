@@ -5,6 +5,8 @@ from launcher import main as launcherMain
 from launcher import clear
 import schedule
 import datetime
+import cursor
+cursor.hide()
 
 # importing external files
 with open("config.yaml", 'r') as stream:
@@ -28,46 +30,31 @@ def getCodeAndPass(cls):
 
 
 def main():
-    # clear()
+    clear()
+
     currTime = datetime.datetime.now().strftime("%H:%M")
-    currDay = datetime.datetime.today().weekday()
-    print(f"called main: {currTime}", end="\r")
+
+    print(f"Last checked for class time at {currTime}", end="\r")
 
     # getting standard wait time based on selection
     STANDARD_WAIT = SETUP[SETUP["chosen_speed"]]["duration"]
     pag.PAUSE = round(0.2 * STANDARD_WAIT, 3)
 
     for cls in CLASS_INFO.items():
-        if currTime == cls[1]["time_weekday"] and currDay in range(3):
+        if currTime == cls[1]["time_weekday"]:
             isConfirmed = pag.confirm(
-                text=f'Join {cls[0]} class?', title='Confirm joining class', buttons=['OK', 'Cancel'])
+                text=f'Join {cls[0]} class?', title=f'Confirm joining of {cls[0]} class', buttons=['OK', 'Cancel'])
 
             if isConfirmed == "OK":
                 code_to_use, password_to_use = getCodeAndPass(cls[0])
                 print(
-                    f"\nUsing {cls[0]} class information \n     Code: {code_to_use} \n      Pass: {password_to_use}")
+                    f"\nUsing {cls[0]} class information \n   Code: {code_to_use} \n   Pass: {password_to_use}")
                 launcherMain(code_to_use, password_to_use,
                              STANDARD_WAIT, SETUP)
-                print(
-                    f"Successfully launched {cls[0]} class and now waiting for next class time!")
-
-        elif currTime == cls[1]["time_friday"] and currDay == 4:
-            isConfirmed = pag.confirm(
-                text=f'Join {cls[0]} class?', title='Confirm joining class', buttons=['OK', 'Cancel'])
-
-            if isConfirmed == "OK":
-                #    if cls[0] == "Chemsitry":
-                code_to_use, password_to_use = getCodeAndPass(cls[0])
-                print(
-                    f"\nUsing {cls[0]} class information \n Code: {code_to_use} \n Pass: {password_to_use}")
-                launcherMain(code_to_use, password_to_use,
-                             STANDARD_WAIT, SETUP)
-                print(
-                    f"Successfully launched {cls[0]} class and now waiting for next class time!")
 
 
 schedule.every(30).seconds.do(main)
 
 while True:
     schedule.run_pending()
-    time.sleep(1)
+    time.sleep(5)
